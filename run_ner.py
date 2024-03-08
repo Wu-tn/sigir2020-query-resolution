@@ -44,8 +44,8 @@ class Ner(BertForTokenClassification):
                 attention_mask_label=None):
         sequence_output = self.bert(input_ids, token_type_ids, attention_mask,head_mask=None)[0]
         batch_size,max_len,feat_dim = sequence_output.shape
-        valid_output = torch.zeros(batch_size,max_len,feat_dim,dtype=torch.float32,device='cuda')
-        valid_output.to(device="cuda:1")
+        valid_output = torch.zeros(batch_size,max_len,feat_dim,dtype=torch.float32,device='cuda:1')
+        #valid_output.to(device="cuda:1")
 
         for i in range(batch_size):
             jj = -1
@@ -54,8 +54,8 @@ class Ner(BertForTokenClassification):
                         jj += 1
                         valid_output[i][jj] = sequence_output[i][j]
         sequence_output = self.dropout(valid_output)
-        sequence_output = sequence_output.to(device="cuda:1")
-        logger.info("sequence_output"+str(sequence_output.device))
+        #sequence_output = sequence_output.to(device="cuda:1")
+        #logger.info("sequence_output"+str(sequence_output.device))
         logits = self.classifier(sequence_output)
 
         if labels is not None:
@@ -693,7 +693,7 @@ def \
     if args.do_train:
 
         model.to(device)
-        logger.info("model in gpu"+str(next(model.parameters()).device))
+        #logger.info("model in gpu"+str(next(model.parameters()).device))
 
         best_f1_score = -1.0
         train_features = convert_examples_to_features(
@@ -725,19 +725,19 @@ def \
             for step, batch in enumerate(tqdm(train_dataloader, desc="Iteration")):
                 batch = tuple(t.to(device) for t in batch)
                 input_ids, input_mask, segment_ids, label_ids, valid_ids,l_mask = batch
-                input_ids = input_ids.to(device)
-                input_mask = input_mask.to(device)
-                segment_ids = segment_ids.to(device)
-                label_ids = label_ids.to(device)
-                valid_ids = valid_ids.to(device)
-                l_mask = l_mask.to(device)
+                #input_ids = input_ids.to(device)
+                #input_mask = input_mask.to(device)
+                #segment_ids = segment_ids.to(device)
+                #label_ids = label_ids.to(device)
+                #valid_ids = valid_ids.to(device)
+                #l_mask = l_mask.to(device)
 
-                logger.info('input_ids in gpu:'+str(input_ids.device))
-                logger.info('input_mask in gpu:'+str(input_mask.device))
-                logger.info('segment_ids in gpu:'+str(segment_ids.device))
-                logger.info('label_ids in gpu:'+str(label_ids.device))
-                logger.info('valid_ids in gpu:'+str(valid_ids.device))
-                logger.info('l_mask in gpu:'+str(l_mask.device))
+                #logger.info('input_ids in gpu:'+str(input_ids.device))
+                #logger.info('input_mask in gpu:'+str(input_mask.device))
+                #logger.info('segment_ids in gpu:'+str(segment_ids.device))
+                #logger.info('label_ids in gpu:'+str(label_ids.device))
+                #logger.info('valid_ids in gpu:'+str(valid_ids.device))
+                #logger.info('l_mask in gpu:'+str(l_mask.device))
 
                 loss = model(input_ids, segment_ids, input_mask, label_ids,valid_ids,l_mask)
                 if n_gpu > 1:
