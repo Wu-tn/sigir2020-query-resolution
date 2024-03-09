@@ -54,7 +54,7 @@ class Ner(BertForTokenClassification):
                         jj += 1
                         valid_output[i][jj] = sequence_output[i][j]
         sequence_output = self.dropout(valid_output)
-        #sequence_output = sequence_output.to(device="cuda:1")
+        sequence_output = sequence_output.to(device)
         #logger.info("sequence_output"+str(sequence_output.device))
         logits = self.classifier(sequence_output)
 
