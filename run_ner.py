@@ -44,7 +44,7 @@ class Ner(BertForTokenClassification):
                 attention_mask_label=None):
         sequence_output = self.bert(input_ids, token_type_ids, attention_mask,head_mask=None)[0]
         batch_size,max_len,feat_dim = sequence_output.shape
-        valid_output = torch.zeros(batch_size,max_len,feat_dim,dtype=torch.float32,device='cuda:1')
+        valid_output = torch.zeros(batch_size,max_len,feat_dim,dtype=torch.float32,device='cuda')
         #valid_output.to(device="cuda:1")
 
         for i in range(batch_size):
@@ -646,7 +646,7 @@ def \
 
 
     #SELECT the device:cuda1
-    device = torch.device('cuda:1')
+    #device = torch.device('cuda:1')
 
     model.to(device)
     logger.info('model in gpu?'+str(next(model.parameters()).is_cuda))
@@ -676,8 +676,8 @@ def \
         model, optimizer = amp.initialize(model, optimizer, opt_level=args.fp16_opt_level)
 
     # multi-gpu training (should be after apex fp16 initialization)
-    #if n_gpu > 1:
-    #    model = torch.nn.DataParallel(model)
+    if n_gpu > 1:
+        model = torch.nn.DataParallel(model)
 
     if args.local_rank != -1:
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank],
