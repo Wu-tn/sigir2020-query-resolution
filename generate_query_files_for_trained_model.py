@@ -19,7 +19,7 @@ def generate_single_model_query_file(dataset_name, qrels, model_output_file, qid
                                 'y_pred': y_pred}
     num_queries = 0
 
-    with open(output_file, 'w') as fw:
+    with open(output_file, 'w',encoding='utf-8') as fw:
         for qid in qrels:
 
             num_queries += 1
@@ -43,7 +43,7 @@ def generate_single_model_query_file(dataset_name, qrels, model_output_file, qid
 def read_qid2curquestion(input_filename):
 
     qid2curquestion = dict()
-    with open(input_filename) as fin:
+    with open(input_filename,encoding='utf-8') as fin:
         for line in fin:
             qid, curquestion = line.strip().split('\t')
             qid2curquestion[qid] = curquestion
